@@ -134,6 +134,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         });
       },
       onAddButton: () {
+        _videoListController.currentPlayer.pause();
         Navigator.of(context).push(
           MaterialPageRoute(
             fullscreenDialog: true,

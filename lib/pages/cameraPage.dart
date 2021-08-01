@@ -3,12 +3,32 @@ import 'package:flutter_tiktok/views/tikTokVideoButtonColumn.dart';
 import 'package:flutter/material.dart';
 import 'package:tapped/tapped.dart';
 
+import 'package:video_player/video_player.dart';
+import 'package:flutter_tiktok/config/resouce_manager.dart';
+
 class CameraPage extends StatefulWidget {
   @override
   _CameraPageState createState() => _CameraPageState();
 }
 
 class _CameraPageState extends State<CameraPage> {
+  //定义一个VideoPlayerController
+  VideoPlayerController? _controller;
+  bool _isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.network('https://static.ybhospital.net/test-video-10.MP4');
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    if (_controller != null) _controller!.pause();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget rightButtons = Column(
@@ -74,15 +94,15 @@ class _CameraPageState extends State<CameraPage> {
       ),
     );
 
-    var closeButton = Tapped(
-      child: Container(
-        padding: EdgeInsets.only(left: 20, top: 20),
-        alignment: Alignment.topLeft,
+    var closeButton = Container(
+      padding: EdgeInsets.only(left: 20, top: 20),
+      alignment: Alignment.topLeft,
+      child: Tapped(
+        onTap: Navigator.of(context).pop,
         child: Container(
           child: Icon(Icons.clear),
         ),
       ),
-      onTap: Navigator.of(context).pop,
     );
 
     var cameraButton = Container(
@@ -113,7 +133,19 @@ class _CameraPageState extends State<CameraPage> {
                 ),
               ),
             ),
-            _SidePhotoButton(title: '上传'),
+            InkWell(
+                onTap: () async {
+                  var video_path = await uploadVideo(context, 1);
+                  print(video_path);
+                  _controller = VideoPlayerController.network(video_path);
+                  final bool isPlaying = _controller!.value.isPlaying;
+                  if (isPlaying != _isPlaying) {
+                    setState(() {
+                      _isPlaying = isPlaying;
+                    });
+                  }
+                },
+                child: _SidePhotoButton(title: '上传')),
           ],
         ),
       ),
@@ -121,6 +153,24 @@ class _CameraPageState extends State<CameraPage> {
     var body = Stack(
       fit: StackFit.expand,
       children: <Widget>[
+        Container(
+          decoration: BoxDecoration(color: Colors.black),
+          child: false
+              ? Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  color: Colors.red,
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 300,
+                    child: AspectRatio(
+                      aspectRatio:  _controller!.value.aspectRatio,
+                      child: VideoPlayer(_controller!),
+                    ),
+                  ),
+                )
+              : Container(),
+        ),
         cameraButton,
         closeButton,
         selectMusic,
@@ -139,6 +189,7 @@ class _CameraPageState extends State<CameraPage> {
 
 class _SidePhotoButton extends StatelessWidget {
   final String? title;
+
   const _SidePhotoButton({
     Key? key,
     this.title,
@@ -174,7 +225,9 @@ class _SidePhotoButton extends StatelessWidget {
 
 class _CameraIconButton extends StatelessWidget {
   final IconData? icon;
+
   final String? title;
+
   const _CameraIconButton({
     Key? key,
     this.icon,
