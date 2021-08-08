@@ -2,6 +2,7 @@ import 'package:flutter_tiktok/mock/video.dart';
 import 'package:flutter_tiktok/other/pageView.dart';
 import 'package:flutter_tiktok/pages/cameraPage.dart';
 import 'package:flutter_tiktok/pages/followPage.dart';
+import 'package:flutter_tiktok/pages/folderPage.dart';
 import 'package:flutter_tiktok/pages/searchPage.dart';
 import 'package:flutter_tiktok/pages/userPage.dart';
 import 'package:flutter_tiktok/views/tikTokCommentBottomSheet.dart';
@@ -104,6 +105,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         break;
       case TikTokPageTag.follow:
         currentPage = FollowPage();
+        break;
+      case TikTokPageTag.follow:
+        currentPage = FollowPage();
+        break;
+      case TikTokPageTag.folder:
+        currentPage = FolderPage();
         break;
       case TikTokPageTag.msg:
         currentPage = MsgPage();

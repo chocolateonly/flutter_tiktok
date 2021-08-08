@@ -6,7 +6,7 @@ import 'package:flutter_tiktok/services/http_utils.dart';
 import 'package:flutter_tiktok/model/file.dart';
 import 'package:flutter_tiktok/services/http_api.dart';
 
-var baseUrl = 'https://taiwan.dev.hbbeisheng.com'; //Http.baseUrl
+var baseUrl = 'http://192.168.3.10:8080'; //Http.baseUrl
 
 Future uploadVideo(context, max) async {
   Loading.showLoading(context);
@@ -28,9 +28,9 @@ Future uploadVideo(context, max) async {
 
 //    var headPic = await HttpUtils.uploadVideo(formdata);
 
-   /* Dio dio = new Dio();
+    Dio dio = new Dio();
     dio.options.contentType="application/x-www-form-urlencoded";
-    Response response = await dio.post<String>(baseUrl+"/api/upload/video", data: formdata);
+    Response response = await dio.post<String>(baseUrl+"/*add_folder", data: formdata);
     print(response);
     if (response.statusCode == 200) {
 
@@ -39,7 +39,7 @@ Future uploadVideo(context, max) async {
 //      print(data is Map);
 //      var video_path=data.data.path;
 
-    }*/
+    }
     var video_path='upload/common/chat/video/20210801/20210801034341162780382148068.mp4';
     finalVideo=(baseUrl+'/' + video_path).toString();
   }

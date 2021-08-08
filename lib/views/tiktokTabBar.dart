@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 enum TikTokPageTag {
   home,
   follow,
+  folder,
   msg,
   me,
 }
@@ -46,6 +47,15 @@ class TikTokTabBar extends StatelessWidget {
               title: '关注',
             ),
             onTap: () => onTabSwitch?.call(TikTokPageTag.follow),
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            child: SelectText(
+              isSelect: current == TikTokPageTag.folder,
+              title: '文件',
+            ),
+            onTap: () => onTabSwitch?.call(TikTokPageTag.folder),
           ),
         ),
         Expanded(
