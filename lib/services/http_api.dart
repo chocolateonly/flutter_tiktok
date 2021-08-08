@@ -1,113 +1,160 @@
-//@dart=2.7.0
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_tiktok/view_model/locale_model.dart';
+// 引入请求的公共配置，例如 baseUrl等
+import 'GlobalConfig.dart';
+// 引入本地缓存插件，用来获取本地缓存中的用户信息
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:flutter_tiktok/config/storage_manager.dart';
-import 'api.dart';
-import 'package:oktoast/oktoast.dart';
-import 'package:flutter_tiktok/views/loading_wrap.dart';
-//final Http http = Http();
-//
-//class Http extends BaseHttp {
-//  static const CONTENT_TYPE_FORM = 'application/x-www-form-urlencoded';
-//  static const baseUrl = 'http://malai.dev.hbbeisheng.com/';
-//
-//  @override
-//  void init() {
-//    options.baseUrl = baseUrl;
-//    options.contentType = options.contentType ?? CONTENT_TYPE_FORM;
-//
-//    interceptors..add(ApiInterceptor())
-//    // cookie持久化 异步
-//      ..add(CookieManager(PersistCookieJar(dir: StorageManager.temporaryDirectory.path)));
-//  }
-//}
-//
-///// 玩Android API
-//class ApiInterceptor extends InterceptorsWrapper {
-//  String uid='', token='';
-//  bool loading=false;
-//  bool isFrom=false;
-//
-//  @override
-//  Future<RequestOptions> onRequest1(RequestOptions options) async {
-//    print('options-----------');
-// uid = StorageManager.sharedPreferences.getString(UserModel.userId);
-//    token = StorageManager.sharedPreferences.getString(UserModel.userToken);
-//
-//
-//    isFrom = options.data is FormData;
-//    if (!isFrom) {
-//      int _localeIndex = StorageManager.sharedPreferences!.getInt(LocaleModel.kLocaleIndex) ?? 0;
-//      options.data['lang'] = LocaleModel.localeValueList[_localeIndex];
-//    }
-//    if (uid != null) {
-//      try {
-//        if (!isFrom) {
-//          options.data['uid'] = uid;
-//          options.data['token'] = token;
-//        } else {
-////          options.contentType ="multipart/form-data";
-//        }
-//      } catch (e) {
-//        print(e.toString());
-//      }
-//    }
-//    //    加载动画
-//    loading = !isFrom && options.data.containsKey('loading') ? options.data['loading'] : false;
-//    if (loading && !isFrom) LoadingWrap.before(options.uri, '');
-//    debugPrint('---api-request--->url--> ${options.baseUrl}${options.path}' + ' json: ${options.data}');
-//    return options;
-//  }
-//
-//  @override
-//  Future onError1(DioError err) async {
-//    //加载动画完成
-//    if (loading && !isFrom) LoadingWrap.complete(err!.request.uri);
-//    debugPrint('---api-request--->data--->${err.toString()}');
-//    return super.onError(err);
-//  }
-//
-//  @override
-//  onResponse(Response response) {
-//    debugPrint('---api-response--->resp----->${response.data}');
-//    ResponseData respData = ResponseData.fromJson(response.data);
-//    //加载动画完成
-//    if (loading && !isFrom) LoadingWrap.complete(response.request.uri);
-//
-//    if (respData.success) {
-//      if (respData.code == "201") {
-//        showToast(respData.message);
-//      }
-//      response.data = respData.data;
-//      return http.resolve(response);
-//    } else {
-//      if (respData.code == "401") {
-//        // 如果cookie过期,需要清除本地存储的登录信息
-////        StorageManager.localStorage.deleteItem(UserModel.kUser);
-//        throw const UnAuthorizedException(); // 需要登录
-//      } else if (respData.code == "400") {
-//        showToast(respData.message);
-//        throw NotSuccessException.fromRespData(respData);
-//      }else {
-//        throw NotSuccessException.fromRespData(respData);
-//      }
-//    }
-//  }}
+// 封装 dio 请求类
+class Http{
+  // dio 的 options 配置
+  static BaseOptions _options = new BaseOptions(
+    baseUrl: baseUrl,        // 请求的baseUrl
+    connectTimeout: 10000,    // 连接超时时间
+    receiveTimeout: 15000,    // 响应超时时间
+    contentType: contentType['form'],
+  );
 
-  class ResponseData extends BaseResponseData {
-  bool get success => "200" == code || code == "300" || code == "201";
-
-  ResponseData.fromJson(Map<String, dynamic> json) {
-  code = json['code'];
-  message = json['desc'];
-  if (json["data"] is List) {
-  data = {"lists": json["data"]};
-  } else
-  data = json['data'];
+  // get 请求
+  static get( url, { pathParams, params, needCode = false ,cancelToken })async{
+    return await request( url , pathParams, params, 'GET', null, needCode, cancelToken );
   }
+  // post 请求
+  static post( url, { pathParams, params, needCode = false ,cancelToken })async{
+    return await request( url , pathParams, params, 'POST', null, needCode, cancelToken );
   }
+  // put 请求
+  static put( url, { pathParams, params, needCode = false ,cancelToken })async{
+    return await request( url , pathParams, params, 'PUT', null, needCode, cancelToken );
+  }
+  // delete 请求
+  static delete( urlName, { pathParams, params, needCode = false ,cancelToken })async{
+    return await request( urlName , pathParams, params, 'DELETE', null, needCode, cancelToken );
+  }
+
+  /*
+        * @description: 封装请求
+        * @param {type}
+        * url          请求主路径连接
+        * pathParams   连接请求参数类型为：https://test_api.com/user/:id/:name
+        * params       请求参数在 body 中，或者为：https://test_api.com/user?id=123&name=zhangsan
+        * method       请求方法
+        * header       请求头重置
+        * needCode     是否需要状态码
+        * @return {type}   返回响应数据
+        */
+  static request(urlName, pathParams, params, method, header, needCode, cancelToken ) async{
+    // 处理URL ，通过 urlName 在 urlPath 中匹配相应的 url 路径地址
+    String url = urlName;
+
+    // get请求处理
+    if(pathParams != null) {
+      // 处理  https://test_api.com/user/:id/:name => https://test_api.com/user/123/zhangsan  请求连接
+      pathParams.forEach((key, value) {
+        if(url.indexOf(key) != -1) {
+          url = url.replaceAll(":$key", value.toString());
+        }
+      });
+    }else if( pathParams == null && method=='GET'){
+      // 处理 https://test_api.com/user?id=123&name=zhangsan 请求连接
+      url += '?';
+      params.forEach((key, value) {
+        url += '$key=$value&';
+      });
+    }
+    // 读取本地缓存中的数据
+    dynamic sp = await SharedPreferences.getInstance();
+    Map headers = {};
+    // 存储 请求头 参数
+    if( header != null ){
+      headers.addAll(header);
+    }
+    //  授权信息 Authorization / token
+    if( sp.get('token') == null &&  sp.get('Authorization') == null ){
+      // 处理授权信息不存在的逻辑，即 重新登录 或者 获取授权信息
+    }else{
+      // 获取授权信息（ token、Authorization 一般出现一个或者两都存在）
+      if( sp.get('token') != null ){
+        headers['token'] = sp.get('token');
+      }
+      if( sp.get('Authorization') != null ){
+        headers['Authorization'] = sp.get('Authorization');
+      }
+    }
+
+    // 设置请求头
+    _options.headers = new Map<String, dynamic>.from(headers);
+
+    // 初始化 Dio
+    Dio _dio = new Dio(_options);
+
+    // 请求拦击
+    _dio.interceptors.add( InterceptorsWrapper(
+        onRequest:(options, handler){
+          // Do something before request is sent
+          return handler.next(options); //continue
+          // If you want to resolve the request with some custom data，
+          // you can resolve a `Response` object eg: return `dio.resolve(response)`.
+          // If you want to reject the request with a error message,
+          // you can reject a `DioError` object eg: return `dio.reject(dioError)`
+        },
+        onResponse:(response,handler) {
+          print('---api-response--->resp----->${response.data}');
+          // Do something with response data
+          return handler.next(response); // continue
+          // If you want to reject the request with a error message,
+          // you can reject a `DioError` object eg: return `dio.reject(dioError)`
+        },
+        onError: (DioError e, handler) {
+          // Do something with response error
+          return  handler.next(e);//continue
+          // If you want to resolve the request with some custom data，
+          // you can resolve a `Response` object eg: return `dio.resolve(response)`.
+        }
+    ));
+
+    Response? response;
+    // dio 请求处理
+    try{
+      response = await _dio.request(url, data:params, options:  Options(method:method), cancelToken: cancelToken);
+    } on DioError catch(e){
+      // 请求错误处理  ,错误码 e.response.statusCode
+      print('请求错误处理： ${e.response!.statusCode}');
+
+      handleHttpError(e.response!.statusCode!);
+      if(CancelToken.isCancel(e)){
+        print('请求取消! ' + e.message);
+      }else{
+        // 请求发生错误处理
+        if( e.type == DioErrorType.connectTimeout ){
+          print('连接超时');
+        }
+      }
+    }
+
+    // 对相应code的处理
+    if( response == null ){
+      print('响应错误');
+    }else if( needCode ){
+      // 需要返回code
+      return response.data;
+    }else if( !needCode ){
+      // 不需要返回 code ，统一处理不同 code 的情况
+      if(response.data!=''&&response.data!=null){
+        // 可对其他不同值的 code 做额外处理
+        return response.data['data'];
+      }else{
+        print('其他数据类型处理');
+        return response;
+      }
+    }
+  }
+
+  /*
+        * @description: 处理Http错误码
+        * @param {type} 错误码
+        * @return {type}
+        */
+  static handleHttpError(int errorCode) {
+    print('http错误码： $errorCode');
+  }
+}
