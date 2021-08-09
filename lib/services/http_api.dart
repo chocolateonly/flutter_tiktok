@@ -4,6 +4,8 @@ import 'GlobalConfig.dart';
 // 引入本地缓存插件，用来获取本地缓存中的用户信息
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'api.dart';
+
 // 封装 dio 请求类
 class Http{
   // dio 的 options 配置
@@ -117,6 +119,7 @@ class Http{
     try{
       response = await _dio.request(url, data:params, options:  Options(method:method), cancelToken: cancelToken);
     } on DioError catch(e){
+      print(e);
       // 请求错误处理  ,错误码 e.response.statusCode
       print('请求错误处理： ${e.response!.statusCode}');
 
@@ -141,6 +144,8 @@ class Http{
       // 不需要返回 code ，统一处理不同 code 的情况
       if(response.data!=''&&response.data!=null){
         // 可对其他不同值的 code 做额外处理
+        print('aaaa');
+        print(response.data);
         return response.data['data'];
       }else{
         print('其他数据类型处理');

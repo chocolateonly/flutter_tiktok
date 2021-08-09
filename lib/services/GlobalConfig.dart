@@ -1,7 +1,7 @@
 // http_config.dart 文件中主要配置请求相关的一些公共配置
 
 // 请求服务器地址
-const String baseUrl =  'https://taiwan.dev.hbbeisheng.com';
+const String baseUrl =  'http://192.168.3.10:8080';
 
 // 请求连接
 const Map urlPath = {

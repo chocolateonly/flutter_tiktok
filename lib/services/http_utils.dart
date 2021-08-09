@@ -12,4 +12,9 @@ class HttpUtils {
     var response = await Http.post('/api/upload/video', params: file);
     return response.data!["path"];
   }
+
+  static Future createFolder(folder_name) async {
+    var response = await Http.post('/*add_folder', params: folder_name);
+    return response.data;
+  }
 }
