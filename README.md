@@ -1,5 +1,5 @@
 # flutter_tiktok
-
+git config http.sslVerify "false"
 仿写抖音的flutter app。主要实现了看视频功能  
 
 # 项目常见问题

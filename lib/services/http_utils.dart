@@ -14,7 +14,11 @@ class HttpUtils {
   }
 
   static Future createFolder(folder_name) async {
-    var response = await Http.post('/*add_folder', params: folder_name);
-    return response.data;
+    var response = await Http.post('/*add_folder', params: {'folder_name':folder_name});
+    return response;
+  }
+  static Future getFolderList(folder_name) async {
+    var response = await Http.post('/*add_folder', params: {'folder_name':folder_name});
+    return response;
   }
 }

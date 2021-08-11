@@ -37,7 +37,7 @@ class FormItem extends StatefulWidget {
 
 class _FormItemState extends State<FormItem> {
   Widget ItemWidget() {
-    print(widget.textColor);
+    print(widget.labelWidth);
     switch (widget.type) {
       default:
         return Container(
@@ -63,14 +63,16 @@ class _FormItemState extends State<FormItem> {
                   ),
                 ),
                 Expanded(
-                  child: TextField(
-                    controller: widget.controller,
-                    readOnly: widget.readOnly,
-                    style: TextStyle(color: Color(0xff666666)),
-                    textAlign: widget.textAlign,
-                    maxLines: widget.maxLines,
-                    keyboardType: widget.inputType,
-                    decoration: InputDecoration(hintText: widget.hintText, hintStyle: TextStyle(color: Colors.grey,fontSize: 14), border: InputBorder.none),
+                  child: Container(
+                    child: TextField(
+                      controller: widget.controller,
+                      readOnly: widget.readOnly,
+                      style: TextStyle(color: Color(0xff666666)),
+                      textAlign: widget.textAlign,
+                      maxLines: widget.maxLines,
+                      keyboardType: widget.inputType,
+                      decoration: InputDecoration(hintText: widget.hintText, hintStyle: TextStyle(color: Colors.grey,fontSize: 14), border: InputBorder.none),
+                    ),
                   ),
                 ),
               ],

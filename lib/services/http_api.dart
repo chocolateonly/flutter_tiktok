@@ -146,7 +146,7 @@ class Http{
         // 可对其他不同值的 code 做额外处理
         print('aaaa');
         print(response.data);
-        return response.data['data'];
+        return response.data;
       }else{
         print('其他数据类型处理');
         return response;
