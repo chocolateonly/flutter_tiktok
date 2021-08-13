@@ -26,6 +26,36 @@ class _FolderPageState extends State<FolderPage> {
       ),
       body: Container(
         color: Colors.white,
+        child: ListView(
+          children: [
+            ListView.builder(
+              shrinkWrap: true, //解决无限高度问题
+              physics: new NeverScrollableScrollPhysics(), //禁用滑动事件
+              itemCount: folderList.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  margin: EdgeInsets.only(bottom: 5),
+                  decoration: BoxDecoration(
+                    //color: index==0?Colors.green:Colors.red,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+
+                      },
+                    child: Row(
+                      children: [
+                        Icon(Icons.folder,color: Colors.amber,),
+                        Expanded(child: Text('文件夹名')),
+                        Icon(Icons.menu,color: Colors.amber,),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
       ),
       floatingActionButton: new FloatingActionButton(
         backgroundColor: ColorPlate.orange,
@@ -97,7 +127,9 @@ class _FolderPageState extends State<FolderPage> {
                   ),
                   CupertinoActionSheetAction(
                     child: Text('创建文件',style: TextStyle(fontSize: 15),),
-                    onPressed: () => {},
+                    onPressed: () => {
+
+                    },
                   ),
                 ],
                 cancelButton: CupertinoButton(
