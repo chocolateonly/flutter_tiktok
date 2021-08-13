@@ -92,6 +92,7 @@ class Http{
     // 请求拦击
     _dio.interceptors.add( InterceptorsWrapper(
         onRequest:(options, handler){
+          print('---api-request--->req----->${options.path}');
           // Do something before request is sent
           return handler.next(options); //continue
           // If you want to resolve the request with some custom data，
@@ -144,7 +145,7 @@ class Http{
       // 不需要返回 code ，统一处理不同 code 的情况
       if(response.data!=''&&response.data!=null){
         // 可对其他不同值的 code 做额外处理
-        print('aaaa');
+        print('response data');
         print(response.data);
         return response.data;
       }else{

@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tiktok/model/add.dart';
 import 'package:flutter_tiktok/style/style.dart';
 import 'package:flutter_tiktok/views/form/form_item.dart';
+import 'package:flutter_tiktok/views/theme_button.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:flutter_tiktok/services/http_utils.dart';
 
@@ -12,8 +15,8 @@ class FolderPage extends StatefulWidget {
 }
 
 class _FolderPageState extends State<FolderPage> {
-  var _phoneController = TextEditingController();
-
+  var _folderController = TextEditingController();
+  var folderList=[];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +37,9 @@ class _FolderPageState extends State<FolderPage> {
                 title: Text('操作'),
                 actions: [
                   CupertinoActionSheetAction(
-                    child: Text('创建文件夹'),
-                    onPressed: () => {
+                    child: Text('创建文件夹',style: TextStyle(fontSize: 15),),
+                    onPressed: () {
+                      Navigator.of(context).pop();
                       showDialog(
                           context: context,
                           barrierDismissible: true, //点击遮罩是否关闭
@@ -61,7 +65,7 @@ class _FolderPageState extends State<FolderPage> {
                                       ),
                                       FormItem(
                                         label: '文件夹名',
-                                        controller: _phoneController,
+                                        controller: _folderController,
                                         inputType: TextInputType.text,
                                         labelWidth: 80.0,
                                         textAlign: TextAlign.left,
@@ -69,37 +73,35 @@ class _FolderPageState extends State<FolderPage> {
                                       SizedBox(
                                         height: 20,
                                       ),
-                                      InkWell(
-                                        onTap: () async {
-                                          Add res =
-                                              await HttpUtils.createFolder(
-                                                  _phoneController.text);
-                                          print('创建文件夹成功');
-                                          print(res);
-                                          showToast(res.folder + '文件夹创建成功');
-                                          //获取文件夹列表
-//                              var res1= await HttpUtils.getFolderList();
-                                        },
-                                        child: Text(
-                                          '提交',
-                                          style: TextStyle(
-                                              color: Colors.orange,
-                                              fontSize: 14),
-                                        ),
-                                      )
+                                      ThemeButton(
+                                        title:'提交',
+                                        onPressed: () async {
+                                        if(_folderController.text=='')  showToast('请输入文件夹名称');
+                                        var res =await HttpUtils.createFolder(
+                                            _folderController.text);
+                                        Add fold=Add.fromJson(res);
+                                        print(fold.folder + '文件夹创建成功');
+                                        showToast(fold.folder + '文件夹创建成功');
+                                        Navigator.of(context).pop();
+                                        //获取文件夹列表
+                                      var folders= await HttpUtils.getFolderList();
+                                        setState(() {
+                                          folderList=folders;
+                                        });
+                                      },)
                                     ],
                                   ),
                                 ));
-                          })
+                          });
                     },
                   ),
                   CupertinoActionSheetAction(
-                    child: Text('创建文件'),
+                    child: Text('创建文件',style: TextStyle(fontSize: 15),),
                     onPressed: () => {},
                   ),
                 ],
                 cancelButton: CupertinoButton(
-                  child: Text('取消'),
+                  child: Text('取消',style: TextStyle(fontSize: 15),),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               );

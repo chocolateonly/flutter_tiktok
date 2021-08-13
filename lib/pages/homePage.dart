@@ -106,9 +106,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       case TikTokPageTag.follow:
         currentPage = FollowPage();
         break;
-      case TikTokPageTag.follow:
-        currentPage = FollowPage();
-        break;
       case TikTokPageTag.folder:
         currentPage = FolderPage();
         break;

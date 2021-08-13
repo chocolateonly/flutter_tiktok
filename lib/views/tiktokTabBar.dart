@@ -51,14 +51,14 @@ class TikTokTabBar extends StatelessWidget {
         ),
         Expanded(
           child: GestureDetector(
-            child: SelectText(
-              isSelect: current == TikTokPageTag.folder,
-              title: '文件',
+            child: Icon(
+              Icons.add_box,
+              size: 32,
             ),
             onTap: () => onTabSwitch?.call(TikTokPageTag.folder),
           ),
         ),
-        Expanded(
+        /*Expanded(
           child: GestureDetector(
             child: Icon(
               Icons.add_box,
@@ -66,7 +66,7 @@ class TikTokTabBar extends StatelessWidget {
             ),
             onTap: () => onAddButton?.call(),
           ),
-        ),
+        ),*/
         Expanded(
           child: GestureDetector(
             child: SelectText(
