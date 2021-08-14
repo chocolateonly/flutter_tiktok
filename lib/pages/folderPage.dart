@@ -115,6 +115,9 @@ class _FolderPageState extends State<FolderPage> {
                                         Navigator.of(context).pop();
                                         //获取文件夹列表
                                       var folders= await HttpUtils.getFolderList();
+//                                       {folders: {a: , b: , s: , q: }}
+                                          print(folders.folders);
+                                          print(jsonEncode(folders.folders));
                                         setState(() {
                                           folderList=folders.folders;
                                         });
@@ -125,12 +128,12 @@ class _FolderPageState extends State<FolderPage> {
                           });
                     },
                   ),
-//                  CupertinoActionSheetAction(
-//                    child: Text('创建文件',style: TextStyle(fontSize: 15),),
-//                    onPressed: () => {
-//
-//                    },
-//                  ),
+                  CupertinoActionSheetAction(
+                    child: Text('创建文件',style: TextStyle(fontSize: 15),),
+                    onPressed: () async {
+                         var file=await HttpUtils.uploadFile('a','b');
+                    },
+                  ),
                 ],
                 cancelButton: CupertinoButton(
                   child: Text('取消',style: TextStyle(fontSize: 15),),
