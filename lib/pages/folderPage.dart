@@ -116,7 +116,7 @@ class _FolderPageState extends State<FolderPage> {
                                         //获取文件夹列表
                                       var folders= await HttpUtils.getFolderList();
                                         setState(() {
-                                          folderList=folders;
+                                          folderList=folders.folders;
                                         });
                                       },)
                                     ],
@@ -125,12 +125,12 @@ class _FolderPageState extends State<FolderPage> {
                           });
                     },
                   ),
-                  CupertinoActionSheetAction(
-                    child: Text('创建文件',style: TextStyle(fontSize: 15),),
-                    onPressed: () => {
-
-                    },
-                  ),
+//                  CupertinoActionSheetAction(
+//                    child: Text('创建文件',style: TextStyle(fontSize: 15),),
+//                    onPressed: () => {
+//
+//                    },
+//                  ),
                 ],
                 cancelButton: CupertinoButton(
                   child: Text('取消',style: TextStyle(fontSize: 15),),

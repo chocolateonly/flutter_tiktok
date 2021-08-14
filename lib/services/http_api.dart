@@ -45,6 +45,8 @@ class Http{
         * @return {type}   返回响应数据
         */
   static request(urlName, pathParams, params, method, header, needCode, cancelToken ) async{
+    print(pathParams);
+    print(params);
     // 处理URL ，通过 urlName 在 urlPath 中匹配相应的 url 路径地址
     String url = urlName;
 

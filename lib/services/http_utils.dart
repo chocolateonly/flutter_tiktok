@@ -18,7 +18,11 @@ class HttpUtils {
     return response;
   }
   static Future getFolderList() async {
-    var response = await Http.post('/*get_folder');
+    var response = await Http.get('/*get_folders',params: {});
+    return response;
+  }
+  static Future uploadFile(folder_name,dir_name) async {
+    var response = await Http.post('/*upload_file',params:{"folder_name":folder_name,"dir_name":dir_name});
     return response;
   }
 }
