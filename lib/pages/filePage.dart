@@ -24,10 +24,10 @@ class _FilePageState extends State<FilePage> {
   getFolderList()async{
     //获取文件夹列表
     var folders= await HttpUtils.getFileList(widget.title);
-//    print(folders["folders"]);
+    print(folders["meta_hash"]);
 //    print((folders["folders"]).keys.toList());
     setState(() {
-      fileList=(folders["folders"]).keys.toList();
+      fileList=(folders["meta_hash"]).keys.toList();
     });
   }
   @override
@@ -89,7 +89,7 @@ class _FilePageState extends State<FilePage> {
                   CupertinoActionSheetAction(
                     child: Text('上传文件',style: TextStyle(fontSize: 15),),
                     onPressed: () async {
-                         var file=await uploadVideo(context,1,widget.title);
+                         var file=await uploadImages(context,1.0,widget.title);
                          showToast('文件上传成功');
                          Navigator.of(context).pop();
                          getFolderList();

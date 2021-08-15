@@ -47,7 +47,7 @@ Future uploadVideo(context, max,folder_name) async {
   Loading.hideLoading(context);
   return finalVideo;
 }
-Future<List> uploadImages(context, max) async {
+Future<List> uploadImages(context, max,folder_name) async {
   Loading.showLoading(context);
   List<XFile>? resultList;
   final ImagePicker _picker = ImagePicker();
@@ -68,14 +68,16 @@ Future<List> uploadImages(context, max) async {
   var name = path.substring(path.lastIndexOf("/") + 1, path.length);
   FormData formdata = FormData.fromMap(
   {"file": await MultipartFile.fromFile(path, filename: name)});
+  var headPic = await HttpUtils.uploadFile(folder_name,formdata);
+  print(headPic);
 
-  Dio dio = new Dio();
+  /*Dio dio = new Dio();
   var respone = await dio.post<String>("/api/upload/image", data: formdata);
   if (respone.statusCode == 200) {
   print(respone);
   var headPic = '';
   finalImg.add((baseUrl + headPic).toString());
-  }
+  }*/
   }
   Loading.hideLoading(context);
   return finalImg;
