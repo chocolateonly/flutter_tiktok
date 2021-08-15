@@ -8,7 +8,7 @@ import 'package:flutter_tiktok/views/form/form_item.dart';
 import 'package:flutter_tiktok/views/theme_button.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:flutter_tiktok/services/http_utils.dart';
-
+import 'package:flutter_tiktok/config/router_manager.dart';
 class FolderPage extends StatefulWidget {
   @override
   _FolderPageState createState() => _FolderPageState();
@@ -17,12 +17,29 @@ class FolderPage extends StatefulWidget {
 class _FolderPageState extends State<FolderPage> {
   var _folderController = TextEditingController();
   var folderList=[];
+
+  getFolderList()async{
+    //获取文件夹列表
+    var folders= await HttpUtils.getFolderList();
+//    print(folders["folders"]);
+//    print((folders["folders"]).keys.toList());
+    setState(() {
+      folderList=(folders["folders"]).keys.toList();
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getFolderList();
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('文件 '),
+        title: Text('文件夹 '),
       ),
       body: Container(
         color: Colors.white,
@@ -41,14 +58,22 @@ class _FolderPageState extends State<FolderPage> {
                   ),
                   child: InkWell(
                     onTap: () {
-
+                      Navigator.of(context).pushNamed(RouteName.file, arguments:[folderList[index]]);
                       },
-                    child: Row(
-                      children: [
-                        Icon(Icons.folder,color: Colors.amber,),
-                        Expanded(child: Text('文件夹名')),
-                        Icon(Icons.menu,color: Colors.amber,),
-                      ],
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(color: Color(0xffeeeeee)))
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.folder,color: Colors.amber,),
+                          Expanded(child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Text(folderList[index],style: TextStyle(color: Colors.black),),
+                          )),
+                          Icon(Icons.menu,color: Colors.amber,),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -113,14 +138,7 @@ class _FolderPageState extends State<FolderPage> {
                                         print(fold.folder + '文件夹创建成功');
                                         showToast(fold.folder + '文件夹创建成功');
                                         Navigator.of(context).pop();
-                                        //获取文件夹列表
-                                      var folders= await HttpUtils.getFolderList();
-//                                       {folders: {a: , b: , s: , q: }}
-                                          print(folders.folders);
-                                          print(jsonEncode(folders.folders));
-                                        setState(() {
-                                          folderList=folders.folders;
-                                        });
+                                        getFolderList();
                                       },)
                                     ],
                                   ),

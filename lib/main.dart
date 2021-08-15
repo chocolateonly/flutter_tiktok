@@ -3,7 +3,7 @@ import 'package:flutter_tiktok/style/style.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
-
+import 'package:flutter_tiktok/config/router_manager.dart';
 void main() {
   /// 自定义报错页面
   if (kReleaseMode) {
@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Tiktok',
         debugShowCheckedModeBanner: false,
+        onGenerateRoute: Routers.generateRoute,
         theme: ThemeData(
           brightness: Brightness.dark,
           hintColor: Colors.white,

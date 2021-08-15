@@ -135,9 +135,9 @@ class _CameraPageState extends State<CameraPage> {
             ),
             InkWell(
                 onTap: () async {
-                  var video_path = await uploadVideo(context, 1);
-                  print(video_path);
-                  _controller = VideoPlayerController.network(video_path);
+//                  var video_path = await uploadVideo(context, 1);
+//                  print(video_path);
+//                  _controller = VideoPlayerController.network(video_path);
                   final bool isPlaying = _controller!.value.isPlaying;
                   if (isPlaying != _isPlaying) {
                     setState(() {

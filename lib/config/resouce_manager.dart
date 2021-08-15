@@ -8,7 +8,7 @@ import 'package:flutter_tiktok/services/http_api.dart';
 
 var baseUrl = 'https://taiwan.dev.hbbeisheng.com'; //Http.baseUrl
 
-Future uploadVideo(context, max) async {
+Future uploadVideo(context, max,folder_name) async {
   Loading.showLoading(context);
   var pcikeFile;
   String finalVideo='';
@@ -26,7 +26,7 @@ Future uploadVideo(context, max) async {
     FormData formdata = FormData.fromMap(
         {"file": await MultipartFile.fromFile(path, filename: name)});
 
-    var headPic = await HttpUtils.uploadVideo(formdata);
+    var headPic = await HttpUtils.uploadFile(folder_name,formdata);
     print(headPic);
 
 //    Dio dio = new Dio();
