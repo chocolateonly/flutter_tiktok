@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_tiktok/services/http_utils.dart';
 import 'package:flutter_tiktok/model/file.dart';
 import 'package:flutter_tiktok/services/http_api.dart';
+import 'package:path_provider/path_provider.dart';
 
 var baseUrl = 'https://taiwan.dev.hbbeisheng.com'; //Http.baseUrl
 
@@ -65,19 +66,12 @@ Future<List> uploadImages(context, max,folder_name) async {
 
   for (var i = 0; i < resultList.length; i++) {
   String path = resultList[i].path;
-  var name = path.substring(path.lastIndexOf("/") + 1, path.length);
-  FormData formdata = FormData.fromMap(
-  {"file": await MultipartFile.fromFile(path, filename: name)});
-  var headPic = await HttpUtils.uploadFile(folder_name,formdata);
+  print('aaaaaaaaaaaaaaaa');
+  print(path);
+  var file_root_path=await getExternalStorageDirectory();
+  print(file_root_path);
+  var headPic = await HttpUtils.uploadFile(folder_name,file_root_path + path);
   print(headPic);
-
-  /*Dio dio = new Dio();
-  var respone = await dio.post<String>("/api/upload/image", data: formdata);
-  if (respone.statusCode == 200) {
-  print(respone);
-  var headPic = '';
-  finalImg.add((baseUrl + headPic).toString());
-  }*/
   }
   Loading.hideLoading(context);
   return finalImg;

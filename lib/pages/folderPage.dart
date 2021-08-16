@@ -146,12 +146,6 @@ class _FolderPageState extends State<FolderPage> {
                           });
                     },
                   ),
-                  CupertinoActionSheetAction(
-                    child: Text('创建文件',style: TextStyle(fontSize: 15),),
-                    onPressed: () async {
-                         var file=await HttpUtils.uploadFile('a','b');
-                    },
-                  ),
                 ],
                 cancelButton: CupertinoButton(
                   child: Text('取消',style: TextStyle(fontSize: 15),),

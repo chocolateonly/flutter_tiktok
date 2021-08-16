@@ -22,7 +22,7 @@ class _FilePageState extends State<FilePage> {
   var fileList=[];
 
   getFolderList()async{
-    //获取文件夹列表
+    //获取文件列表
     var folders= await HttpUtils.getFileList(widget.title);
     print(folders["meta_hash"]);
 //    print((folders["folders"]).keys.toList());
