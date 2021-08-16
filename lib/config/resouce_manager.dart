@@ -6,7 +6,7 @@ import 'package:flutter_tiktok/services/http_utils.dart';
 import 'package:flutter_tiktok/model/file.dart';
 import 'package:flutter_tiktok/services/http_api.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:file_picker/file_picker.dart';
 var baseUrl = 'https://taiwan.dev.hbbeisheng.com'; //Http.baseUrl
 
 Future uploadVideo(context, max,folder_name) async {
@@ -51,27 +51,13 @@ Future uploadVideo(context, max,folder_name) async {
 Future<List> uploadImages(context, max,folder_name) async {
   Loading.showLoading(context);
   List<XFile>? resultList;
-  final ImagePicker _picker = ImagePicker();
-  try {
-  resultList = await _picker.pickMultiImage(maxWidth: max);
-  } on Exception catch (e) {
-  print(e);
-  }
-
-  if (resultList == null) {
-  return [];
-  }
-
   List<String> finalImg = [];
-
-  for (var i = 0; i < resultList.length; i++) {
-  String path = resultList[i].path;
-  print('aaaaaaaaaaaaaaaa');
-  print(path);
-  var file_root_path=await getExternalStorageDirectory();
-  print(file_root_path);
-  var headPic = await HttpUtils.uploadFile(folder_name,file_root_path + path);
-  print(headPic);
+  FilePickerResult? result = await FilePicker.platform.pickFiles();
+  print('ssssssssssssssssss');
+  print(result!.files.single.path);
+  if(result!=null){
+    var headPic = await HttpUtils.uploadFile(folder_name, result.files.single.path);
+    print(headPic);
   }
   Loading.hideLoading(context);
   return finalImg;

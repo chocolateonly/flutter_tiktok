@@ -14,7 +14,7 @@ class File {
   Data get data => _data;
   int get timestamp => _timestamp;
 
-  File({
+  File(String? path, {
       required int code,
       required String message,
       required Data data,
