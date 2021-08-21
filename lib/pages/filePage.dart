@@ -9,7 +9,7 @@ import 'package:flutter_tiktok/views/theme_button.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:flutter_tiktok/services/http_utils.dart';
 import 'package:flutter_tiktok/config/resouce_manager.dart';
-
+var baseUrl1= 'http://192.168.3.10:8080';
 class FilePage extends StatefulWidget {
   var title;
   FilePage(this.title);
@@ -23,11 +23,15 @@ class _FilePageState extends State<FilePage> {
 
   getFolderList()async{
     //获取文件列表
-    var folders= await HttpUtils.getFileList(widget.title);
-    print(folders["meta_hash"]);
-//    print((folders["folders"]).keys.toList());
+    var folder= await HttpUtils.getFileList(widget.title);
+    print(folder["meta_hash"]);
+    var meta_hash=folder["meta_hash"];
+    var files=await HttpUtils.getMeta(widget.title, meta_hash);
+    print(jsonDecode(files));
+    print((jsonDecode(files)["items"]).keys.toList());
     setState(() {
-      fileList=(folders["meta_hash"]).keys.toList();
+      var list =(jsonDecode(files)["items"]).keys.toList();
+      fileList=list;
     });
   }
   @override
@@ -65,9 +69,8 @@ class _FilePageState extends State<FilePage> {
                       },
                     child: Row(
                       children: [
-                        Icon(Icons.folder,color: Colors.amber,),
+                        Icon(Icons.assignment,color: Colors.amber,),
                         Expanded(child: Text(fileList[index],style: TextStyle(color: Colors.black),)),
-                        Icon(Icons.menu,color: Colors.amber,),
                       ],
                     ),
                   ),
@@ -89,7 +92,7 @@ class _FilePageState extends State<FilePage> {
                   CupertinoActionSheetAction(
                     child: Text('上传文件',style: TextStyle(fontSize: 15),),
                     onPressed: () async {
-                         var file=await uploadImages(context,1.0,widget.title);
+                         var file=await uploadFile(context,1.0,widget.title);
                          showToast('文件上传成功');
                          Navigator.of(context).pop();
                          getFolderList();

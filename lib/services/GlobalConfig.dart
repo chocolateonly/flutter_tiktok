@@ -2,8 +2,8 @@
 
 // 请求服务器地址
 
-//const String baseUrl =  'http://192.168.3.10:8080';
-const String baseUrl =  'http://192.168.0.243:8888';
+const String baseUrl =  'http://192.168.3.10:8080';
+//const String baseUrl =  'http://192.168.0.243:8888';
 
 // 请求连接
 const Map urlPath = {

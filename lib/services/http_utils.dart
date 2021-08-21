@@ -29,4 +29,8 @@ class HttpUtils {
     var response = await Http.get('/*get_folder',params: {"folder_name":folder_name});
     return response;
   }
+  static Future getMeta(folder_name,folder_meta_hash) async {
+    var response = await Http.get('/*get_meta',params: {"folder_name":folder_name,"folder_meta_hash":folder_meta_hash});
+    return response;
+  }
 }

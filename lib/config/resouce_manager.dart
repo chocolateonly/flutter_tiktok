@@ -51,13 +51,46 @@ Future uploadVideo(context, max,folder_name) async {
 Future<List> uploadImages(context, max,folder_name) async {
   Loading.showLoading(context);
   List<XFile>? resultList;
+  final ImagePicker _picker = ImagePicker();
+  try {
+  resultList = await _picker.pickMultiImage(maxWidth: max);
+  } on Exception catch (e) {
+  print(e);
+  }
+
+  if (resultList == null) {
+  return [];
+  }
+
+  List<String> finalImg = [];
+
+  for (var i = 0; i < resultList.length; i++) {
+  String path = resultList[i].path;
+  print('aaaaaaaaaaaaaaaa');
+  print(path);
+  var file_root_path=await getExternalStorageDirectory();
+  print(file_root_path);
+  var headPic = await HttpUtils.uploadFile(folder_name,path);
+  print(headPic);
+  }
+  Loading.hideLoading(context);
+  return finalImg;
+}
+Future<List> uploadFile (context, max,folder_name) async {
+  Loading.showLoading(context);
+  List<XFile>? resultList;
   List<String> finalImg = [];
   FilePickerResult? result = await FilePicker.platform.pickFiles();
   print('ssssssssssssssssss');
   print(result!.files.single.path);
+
   if(result!=null){
-    var headPic = await HttpUtils.uploadFile(folder_name, result.files.single.path);
-    print(headPic);
+  var path=result.files.single.path;
+  var name = path!.substring(path.lastIndexOf("/") + 1, path.length);
+  FormData formdata = FormData.fromMap(
+  {"file": await MultipartFile.fromFile(path, filename: name)});
+  var headPic = await HttpUtils.uploadFile(folder_name, formdata);
+  print(headPic);
   }
   Loading.hideLoading(context);
   return finalImg;
