@@ -16,7 +16,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:safemap/safemap.dart';
 import 'package:video_player/video_player.dart';
-
+import 'dart:convert';
+import 'package:flutter_tiktok/services/http_utils.dart';
 import 'msgPage.dart';
 
 /// 单独修改了bottomSheet组件的高度
@@ -41,6 +42,49 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   List<UserVideo> videoDataList = [];
 
+  getVideos()async {
+    var list =await UserVideo.fetchVideo();
+    setState(() {
+      videoDataList =list;
+      print(videoDataList);
+
+      WidgetsBinding.instance!.addObserver(this);
+      _videoListController.init(
+      pageController: _pageController,
+      initialList: videoDataList
+          .map(
+      (e) => VPVideoController(
+      videoInfo: e,
+      builder: () => VideoPlayerController.network(e.url),
+      ),
+      )
+          .toList(),
+      videoProvider: (int index, List<VPVideoController> list) async {
+      return videoDataList
+          .map(
+      (e) => VPVideoController(
+      videoInfo: e,
+      builder: () => VideoPlayerController.network(e.url),
+      ),
+      )
+          .toList();
+      },
+      );
+      _videoListController.addListener(() {
+      setState(() {});
+      });
+      tkController.addListener(
+      () {
+      if (tkController.value == TikTokPagePositon.middle) {
+      _videoListController.currentPlayer.play();
+      } else {
+      _videoListController.currentPlayer.pause();
+      }
+      },
+      );
+
+    });
+  }
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state != AppLifecycleState.resumed) {
@@ -57,42 +101,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    videoDataList = UserVideo.fetchVideo();
-    WidgetsBinding.instance!.addObserver(this);
-    _videoListController.init(
-      pageController: _pageController,
-      initialList: videoDataList
-          .map(
-            (e) => VPVideoController(
-              videoInfo: e,
-              builder: () => VideoPlayerController.network(e.url),
-            ),
-          )
-          .toList(),
-      videoProvider: (int index, List<VPVideoController> list) async {
-        return videoDataList
-            .map(
-              (e) => VPVideoController(
-                videoInfo: e,
-                builder: () => VideoPlayerController.network(e.url),
-              ),
-            )
-            .toList();
-      },
-    );
-    _videoListController.addListener(() {
-      setState(() {});
-    });
-    tkController.addListener(
-      () {
-        if (tkController.value == TikTokPagePositon.middle) {
-          _videoListController.currentPlayer.play();
-        } else {
-          _videoListController.currentPlayer.pause();
-        }
-      },
-    );
-
+    getVideos();
     super.initState();
   }
 
