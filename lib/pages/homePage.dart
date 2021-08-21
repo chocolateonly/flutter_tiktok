@@ -19,7 +19,7 @@ import 'package:video_player/video_player.dart';
 import 'dart:convert';
 import 'package:flutter_tiktok/services/http_utils.dart';
 import 'msgPage.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 /// 单独修改了bottomSheet组件的高度
 import 'package:flutter_tiktok/other/bottomSheet.dart' as CustomBottomSheet;
 
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<UserVideo> videoDataList = [];
 
   getVideos()async {
-    var list =await UserVideo.fetchVideo();
+    var list =await UserVideo.fetchVideo2();
     setState(() {
       videoDataList =list;
       print(videoDataList);
@@ -199,6 +199,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               bool isF = SafeMap(favoriteMap)[i].boolean ?? false;
               var player = _videoListController.playerOfIndex(i)!;
               var data = player.videoInfo!;
+              print('data---------');
+              print(data);
               // 右侧按钮列
               Widget buttons = TikTokButtonColumn(
                 isFavorite: isF,
@@ -221,9 +223,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 },
                 onShare: () {},
               );
-              // video
               Widget currentVideo = Center(
-                child: AspectRatio(
+                child: videoDataList[i].image!=''?
+              Image.network(videoDataList[i].image):
+              AspectRatio(
                   aspectRatio: player.controller.value.aspectRatio,
                   child: VideoPlayer(player.controller),
                 ),
@@ -254,7 +257,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   });
                 },
                 rightButtonColumn: buttons,
-                video: currentVideo,
+                video: currentVideo
               );
               return currentVideo;
             },

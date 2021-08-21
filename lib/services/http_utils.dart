@@ -21,8 +21,8 @@ class HttpUtils {
     var response = await Http.get('/*get_folders',params: {});
     return response;
   }
-  static Future uploadFile(folder_name, file) async {
-    var response = await Http.post('/*upload_file',params:{"folder_name":folder_name,"dir_name":file});
+  static Future uploadFile(formdata) async {
+    var response = await Http.post('/*upload_file',params:formdata);
     return response;
   }
   static Future getFileList(folder_name) async {

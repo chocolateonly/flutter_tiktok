@@ -21,9 +21,8 @@ Future<List> uploadFile (context, max,folder_name) async {
   var path=result.files.single.path;
   var name = path!.substring(path.lastIndexOf("/") + 1, path.length);
   FormData formdata = FormData.fromMap(
-  {"file": await MultipartFile.fromFile(path, filename: name)});
-  var headPic = await HttpUtils.uploadFile(folder_name, formdata);
-  print(headPic);
+  {"file": await MultipartFile.fromFile(path, filename: name),'folder_name':folder_name,"dir_name":"/"});
+  var headPic = await HttpUtils.uploadFile(formdata);
   }
   Loading.hideLoading(context);
   return finalImg;
