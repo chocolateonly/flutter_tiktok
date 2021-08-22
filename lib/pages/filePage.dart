@@ -9,7 +9,6 @@ import 'package:flutter_tiktok/views/theme_button.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:flutter_tiktok/services/http_utils.dart';
 import 'package:flutter_tiktok/config/resouce_manager.dart';
-var baseUrl1= 'http://192.168.3.10:8080';
 class FilePage extends StatefulWidget {
   var title;
   FilePage(this.title);

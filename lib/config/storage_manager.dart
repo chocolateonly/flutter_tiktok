@@ -5,10 +5,10 @@ import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageManager{
-  static LocalStorage? localStorage;
-  static SharedPreferences? sharedPreferences;
+ static var localStorage;
+ static var sharedPreferences;
   /// 临时目录 eg: cookie
-  static Directory? temporaryDirectory;
+ static  var temporaryDirectory;
 
   static init() async{
     temporaryDirectory = await getTemporaryDirectory();

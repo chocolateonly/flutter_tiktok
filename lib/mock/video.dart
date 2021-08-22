@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter_tiktok/services/GlobalConfig.dart';
 import 'dart:convert';
 import 'package:flutter_tiktok/services/http_utils.dart';
 Socket? socket;
@@ -47,9 +47,9 @@ class UserVideo {
       if(e.contains('.mp4')||e.contains('.mov')||e.contains('.m4a')){
         print('http://192.168.3.10:8080/test/$e');
 //        https://vd3.bdstatic.com/mda-mhjgcbhdu5p81hpi/sc/cae_h264_clips/1629518456765967943/mda-mhjgcbhdu5p81hpi.mp4?auth_key=1629544319-0-0-4596aed3e981c64982a55d8bdb014ac5&bcevod_channel=searchbox_feed&pd=1&pt=3&abtest=
-        list.add(UserVideo(image: '', url: 'http://192.168.3.10:8080/test/$e', desc: 'test_video_desc'));
+        list.add(UserVideo(image: '', url: baseUrl+'/test/$e', desc: 'test_video_desc'));
       }else if(e.contains('.jpg')||e.contains('.jpeg')||e.contains('.png')||e.contains('.gif')||e.contains('.webp')||e.contains('.bmp')){
-        list.add(UserVideo(image: 'http://192.168.3.10:8080/test/$e', url: '', desc: 'test_video_desc'));
+        list.add(UserVideo(image:  baseUrl+'/test/$e', url: '', desc: 'test_video_desc'));
       }
     });
     print('aaa');

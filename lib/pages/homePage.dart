@@ -19,7 +19,6 @@ import 'package:video_player/video_player.dart';
 import 'dart:convert';
 import 'package:flutter_tiktok/services/http_utils.dart';
 import 'msgPage.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 /// 单独修改了bottomSheet组件的高度
 import 'package:flutter_tiktok/other/bottomSheet.dart' as CustomBottomSheet;
 
@@ -43,9 +42,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   List<UserVideo> videoDataList = [];
 
   getVideos()async {
-    var list =await UserVideo.fetchVideo2();
+    var list = await UserVideo.fetchVideo2();
     setState(() {
-      videoDataList =list;
+      videoDataList =list.length>0?list:UserVideo.fetchVideo();
       print(videoDataList);
 
       WidgetsBinding.instance!.addObserver(this);

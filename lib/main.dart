@@ -4,7 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:flutter_tiktok/config/router_manager.dart';
-void main() {
+import 'package:flutter_tiktok/pages/settingsPage.dart';
+
+import 'package:flutter_tiktok/config/storage_manager.dart';
+void main() async {
   /// 自定义报错页面
   if (kReleaseMode) {
     ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) {
@@ -18,6 +21,9 @@ void main() {
       );
     };
   }
+
+  WidgetsFlutterBinding.ensureInitialized(); //将组件和flutter绑定？
+  await StorageManager.init(); //本地存储初始化
   runApp(MyApp());
 }
 
@@ -43,7 +49,7 @@ class MyApp extends StatelessWidget {
             bodyText1: StandardTextStyle.normal,
           ),
         ),
-        home: HomePage(),
+        home: SettingsPage(),
       ),
     );
   }
