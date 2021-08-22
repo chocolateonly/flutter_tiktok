@@ -70,12 +70,12 @@ class TikTokVideoListController extends ChangeNotifier {
     }
     // 快到最底部，添加更多视频
     if (playerList.length - newIndex <= loadMoreCount + 1) {
-      _videoProvider?.call(newIndex, playerList).then(
-        (list) async {
-          playerList.addAll(list);
-          notifyListeners();
-        },
-      );
+//      _videoProvider?.call(newIndex, playerList).then(
+//        (list) async {
+//          playerList.addAll(list);
+//          notifyListeners();
+//        },
+//      );
     }
 
     // 完成
