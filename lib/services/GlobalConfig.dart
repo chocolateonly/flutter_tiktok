@@ -7,7 +7,11 @@ getIp(){
   var folderName=StorageManager.sharedPreferences.getString('indexFolder')??'';
   return ip;
 }
-
+getFolderName(){
+  var folderName=StorageManager.sharedPreferences.getString('indexFolder')??'';
+  return folderName;
+}
+var folderName=getFolderName()!=''?getFolderName():'test';
 var  baseUrl = getIp()!=''?getIp() :'http://192.168.3.10:8080';
 //const String baseUrl =  'http://192.168.0.243:8888';
 // 请求连接
