@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api.dart';
 
+var  baseUrl = getIp()!=''?getIp() :'http://192.168.3.10:8080';
 // 封装 dio 请求类
 class Http{
   // dio 的 options 配置

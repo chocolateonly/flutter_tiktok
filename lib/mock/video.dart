@@ -27,18 +27,20 @@ class UserVideo {
   }
 
   static fetchVideo2() async {
+    var folderName=getFolderName()!=''?getFolderName():'test';
+    var  baseUrl = getIp()!=''?getIp() :'http://192.168.3.10:8080';
     //获取文件列表
-    var folder= await HttpUtils.getFileList('test');
+    var folder= await HttpUtils.getFileList(folderName);
     print(folder["meta_hash"]);
     var meta_hash=folder["meta_hash"];
-    var files=await HttpUtils.getMeta('test', meta_hash);
+    var files=await HttpUtils.getMeta(folderName, meta_hash);
     print(jsonDecode(files));
     print((jsonDecode(files)["items"]).keys.toList());
     List<UserVideo> list =[];
     (jsonDecode(files)["items"]).keys.toList()
         .forEach((e){
       if(e.contains('.mp4')||e.contains('.mov')||e.contains('.m4a')){
-        print('http://192.168.3.10:8080/test/$e');
+        print('http://$baseUrl/$folderName/$e');
 //        https://vd3.bdstatic.com/mda-mhjgcbhdu5p81hpi/sc/cae_h264_clips/1629518456765967943/mda-mhjgcbhdu5p81hpi.mp4?auth_key=1629544319-0-0-4596aed3e981c64982a55d8bdb014ac5&bcevod_channel=searchbox_feed&pd=1&pt=3&abtest=
         list.add(UserVideo(image: '', url: baseUrl+'/'+folderName+'/$e', desc: 'test_vi'
             'deo'
