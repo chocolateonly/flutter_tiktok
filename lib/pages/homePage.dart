@@ -223,8 +223,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 CachedNetworkImage(
                   imageUrl: videoDataList[i].image,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(value: downloadProgress.progress),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                      CircularProgressIndicator(value: downloadProgress.progress,color:Colors.orange),
+                  errorWidget: (context, url, error) => Icon(Icons.error,color:Colors.orange),
                 ):
               AspectRatio(
                   aspectRatio: player.controller.value.aspectRatio,
