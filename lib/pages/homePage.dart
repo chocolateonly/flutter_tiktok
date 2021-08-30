@@ -16,7 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:safemap/safemap.dart';
 import 'package:video_player/video_player.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'msgPage.dart';
 
 /// 单独修改了bottomSheet组件的高度
@@ -220,7 +220,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               // video
               Widget currentVideo = Center(
                 child: videoDataList[i].image!=''?
-              Image.network(videoDataList[i].image):
+                CachedNetworkImage(
+                  imageUrl: videoDataList[i].image,
+                  progressIndicatorBuilder: (context, url, downloadProgress) =>
+                      CircularProgressIndicator(value: downloadProgress.progress),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ):
               AspectRatio(
                   aspectRatio: player.controller.value.aspectRatio,
                   child: VideoPlayer(player.controller),
