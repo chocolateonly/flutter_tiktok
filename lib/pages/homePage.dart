@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.dispose();
   }
   getVideos()async{
-    var list = await UserVideo.fetchVideo();
+    var list = await UserVideo.fetchVideo2();
     videoDataList =list.length>0?list:UserVideo.fetchVideo();
 
     WidgetsBinding.instance!.addObserver(this);
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         currentPage = FollowPage();
         break;
       case TikTokPageTag.folder:
-        currentPage = FolderPage();
+        currentPage = FolderPage('');
         break;
       case TikTokPageTag.msg:
         currentPage = MsgPage();

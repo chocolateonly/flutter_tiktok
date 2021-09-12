@@ -9,7 +9,10 @@ import 'package:flutter_tiktok/views/theme_button.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:flutter_tiktok/services/http_utils.dart';
 import 'package:flutter_tiktok/config/router_manager.dart';
+import 'package:flutter_tiktok/config/storage_manager.dart';
 class FolderPage extends StatefulWidget {
+  var type='';
+  FolderPage(this.type);
   @override
   _FolderPageState createState() => _FolderPageState();
 }
@@ -58,7 +61,12 @@ class _FolderPageState extends State<FolderPage> {
                   ),
                   child: InkWell(
                     onTap: () {
-                      Navigator.of(context).pushNamed(RouteName.file, arguments:[folderList[index]]);
+                    if(widget.type=='')   Navigator.of(context).pushNamed(RouteName.file, arguments:[folderList[index]]);
+                    else{
+//                      选中
+                      StorageManager.sharedPreferences.setString('indexFolder', folderList[index]);
+                      Navigator.of(context).pushNamed(RouteName.home, arguments:[]);
+                    }
                       },
                     child: Container(
                       decoration: BoxDecoration(

@@ -6,14 +6,18 @@ import 'package:flutter_tiktok/views/theme_button.dart';
 import 'package:flutter_tiktok/config/router_manager.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:flutter_tiktok/config/storage_manager.dart';
+import 'package:flutter_tiktok/views/form/radio_list.dart';
+
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
-
+const defaultPort='80';
 class _SettingsPageState extends State<SettingsPage> {
   var _ipController = TextEditingController();
-  var _folderController = TextEditingController();
+  var _portController = TextEditingController();
+  var httpIndex=0;
+  var httpList=['http','https'];
 
   @override
   void initState() {
@@ -21,17 +25,12 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
     print('baseurl foldername');
     if(StorageManager.sharedPreferences!=null) {
-      var baseUrl = StorageManager.sharedPreferences.getString('baseUrl');
-    var folderName=StorageManager.sharedPreferences.getString('indexFolder');
-
-    print(baseUrl);
-    print(folderName);
-    if(baseUrl!=null){
-    _ipController.text=baseUrl;
-    }
-    if(folderName!=null){
-    _folderController.text=folderName;
-    }
+      var baseHttp= StorageManager.sharedPreferences.getInt('baseHttp');
+      var baseIP = StorageManager.sharedPreferences.getString('baseIP');
+      var basePort=StorageManager.sharedPreferences.getString('basePort');
+      _ipController.text=baseIP??'';
+      _portController.text=basePort??defaultPort;
+      if(baseHttp!=null) httpIndex=baseHttp;
   }
   }
 
@@ -47,19 +46,44 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Colors.white,
         child: Column(
           children: <Widget>[
+            RadioList(
+            options: httpList,
+            selected: httpIndex,
+            isRow: true,
+            height: 50,
+            crossAxisCount: 2,
+            childAspectRatio: 1.7,
+            onChange: (i) {
+              print(i);
+              setState(() {
+                httpIndex = i;
+              });
+            }),
             FormItem(
-              label: 'ip设置',
+              label: 'IP地址',
               controller: _ipController,
               inputType: TextInputType.text,
               labelWidth: 80.0,
               textAlign: TextAlign.left,
             ),
-            FormItem(
-              label: '首页文件夹',
-              controller: _folderController,
-              inputType: TextInputType.text,
-              labelWidth: 80.0,
-              textAlign: TextAlign.left,
+            Row(
+              children: [
+                Expanded(
+                  child: FormItem(
+                    label: '端口号',
+                    controller: _portController,
+                    inputType: TextInputType.text,
+                    labelWidth: 80.0,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                InkWell(
+                  child: Text('设置默认',style: TextStyle(color: Colors.orange),),
+                  onTap: (){
+                    _portController.text=defaultPort;
+                  },
+                )
+              ],
             ),
             SizedBox(
               height: 20,
@@ -71,10 +95,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   showToast('请输入ip地址');
                   return null;
                 }
-                if(_folderController.text=='') { showToast('请输入文件夹名称'); return null;}
-                StorageManager.sharedPreferences.setString('baseUrl', _ipController.text);
-                StorageManager.sharedPreferences.setString('indexFolder', _folderController.text);
-                Navigator.of(context).pushNamed(RouteName.home, arguments:[]);
+                if(_portController.text=='') { showToast('请输入端口号'); return null;}
+                var baseUrl=httpList[httpIndex]+'://'+ _ipController.text+':'+_portController.text;
+                StorageManager.sharedPreferences.setString('baseUrl', baseUrl);
+                StorageManager.sharedPreferences.setString('baseIP', _ipController.text);
+                StorageManager.sharedPreferences.setString('basePort', _portController.text);
+                StorageManager.sharedPreferences.setInt('baseHttp', httpIndex);
+                Navigator.of(context).pushNamed(RouteName.folder, arguments:['select']);
 
               },)
           ],

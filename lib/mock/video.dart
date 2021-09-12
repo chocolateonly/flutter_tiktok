@@ -46,7 +46,7 @@ class UserVideo {
     List<UserVideo> list =[];
     (jsonDecode(files)["items"]).keys.toList()
         .forEach((e){
-      if(e.contains('.mp4')||e.contains('.mov')||e.contains('.m4a')){
+      if(e.contains('.mp4')||e.contains('.MP4')||e.contains('.mov')||e.contains('.m4a')){
         print('http://$baseUrl/$folderName/$e');
 //        https://vd3.bdstatic.com/mda-mhjgcbhdu5p81hpi/sc/cae_h264_clips/1629518456765967943/mda-mhjgcbhdu5p81hpi.mp4?auth_key=1629544319-0-0-4596aed3e981c64982a55d8bdb014ac5&bcevod_channel=searchbox_feed&pd=1&pt=3&abtest=
         list.add(UserVideo(image: '', url: baseUrl+'/'+folderName+'/$e', desc: 'test_vi'

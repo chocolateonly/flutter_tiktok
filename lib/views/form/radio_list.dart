@@ -30,14 +30,14 @@ class _RadioListState extends State<RadioList> {
   List getRadioList() {
     var list = [];
 
-    for (var i = 0; i < widget.options!.length; i++) {
+    for (int i = 0; i < widget.options!.length; i++) {
       list.add(Item(i));
     }
 
     return list;
   }
 
-  Widget Item(i) {
+  Widget Item(int i) {
     return Container(
       child: InkWell(
         onTap: () {
@@ -46,7 +46,7 @@ class _RadioListState extends State<RadioList> {
         child: Row(
           children: <Widget>[
            Radio(
-             value: 'I',
+             value: i,
              groupValue: widget.selected,
              onChanged:(index) {
                setState(() {
@@ -57,7 +57,7 @@ class _RadioListState extends State<RadioList> {
 
             Text(
               widget.options![i],
-              style: TextStyle(fontSize: 26),
+              style: TextStyle(fontSize: 22,color: Color(0xff333333)),
               overflow: TextOverflow.ellipsis,
             )
           ],
