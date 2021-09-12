@@ -89,12 +89,30 @@ class _FilePageState extends State<FilePage> {
                 title: Text('操作'),
                 actions: [
                   CupertinoActionSheetAction(
-                    child: Text('上传文件',style: TextStyle(fontSize: 15),),
+                    child: Text('选择文件',style: TextStyle(fontSize: 15),),
                     onPressed: () async {
                          var file=await uploadFile(context,1.0,widget.title);
                          showToast('文件上传成功');
                          Navigator.of(context).pop();
                          getFolderList();
+                    },
+                  ),
+                  CupertinoActionSheetAction(
+                    child: Text('拍照上传',style: TextStyle(fontSize: 15),),
+                    onPressed: () async {
+                      var file=await uploadImages(context,1.0,widget.title);
+                      showToast('图片上传成功');
+                      Navigator.of(context).pop();
+                      getFolderList();
+                    },
+                  ),
+                  CupertinoActionSheetAction(
+                    child: Text('拍摄上传',style: TextStyle(fontSize: 15),),
+                    onPressed: () async {
+                      var file=await uploadVideo(context,1.0,widget.title);
+                      showToast('视频上传成功');
+                      Navigator.of(context).pop();
+                      getFolderList();
                     },
                   ),
                 ],

@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.dispose();
   }
   getVideos()async{
-    var list = await UserVideo.fetchVideo2();
+    var list = await UserVideo.fetchVideo();
     videoDataList =list.length>0?list:UserVideo.fetchVideo();
 
     WidgetsBinding.instance!.addObserver(this);

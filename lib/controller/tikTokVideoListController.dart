@@ -6,9 +6,9 @@ import 'package:flutter_tiktok/other/pageView.dart';
 import 'package:video_player/video_player.dart';
 
 typedef LoadMoreVideo = Future<List<VPVideoController>> Function(
-  int index,
-  List<VPVideoController> list,
-);
+    int index,
+    List<VPVideoController> list,
+    );
 
 /// TikTokVideoListController是一系列视频的控制器，内部管理了视频控制器数组
 /// 提供了预加载/释放/加载更多功能
@@ -55,7 +55,7 @@ class TikTokVideoListController extends ChangeNotifier {
     // 处理预加载/释放内存
     for (var i = 0; i < playerList.length; i++) {
       // 需要释放[disposeCount]之前的视频
-      if (i < newIndex - disposeCount) {
+      if (i < newIndex - disposeCount || i > newIndex + disposeCount) {
         print('释放$i');
         playerOfIndex(i)?.controller.removeListener(_didUpdateValue);
         playerOfIndex(i)?.showPauseIcon.removeListener(_didUpdateValue);
@@ -70,12 +70,12 @@ class TikTokVideoListController extends ChangeNotifier {
     }
     // 快到最底部，添加更多视频
     if (playerList.length - newIndex <= loadMoreCount + 1) {
-//      _videoProvider?.call(newIndex, playerList).then(
-//        (list) async {
-//          playerList.addAll(list);
-//          notifyListeners();
-//        },
-//      );
+      _videoProvider?.call(newIndex, playerList).then(
+            (list) async {
+          playerList.addAll(list);
+          notifyListeners();
+        },
+      );
     }
 
     // 完成
@@ -108,7 +108,7 @@ class TikTokVideoListController extends ChangeNotifier {
     pageController.addListener(() {
       var p = pageController.page!;
       if (p % 1 == 0) {
-        loadIndex(p ~/ 1);
+      loadIndex(p ~/ 1);
       }
     });
     loadIndex(0, reload: true);
