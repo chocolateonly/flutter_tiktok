@@ -19,6 +19,8 @@ import 'package:video_player/video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'msgPage.dart';
 
+import 'package:flutter_downloader/flutter_downloader.dart';
+
 /// 单独修改了bottomSheet组件的高度
 import 'package:flutter_tiktok/other/bottomSheet.dart' as CustomBottomSheet;
 
@@ -55,7 +57,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.dispose();
   }
   getVideos()async{
-    var list = await UserVideo.fetchVideo2();
+    var list = await UserVideo.fetchVideo2(context);
     videoDataList =list.length>0?list:UserVideo.fetchVideo();
 
     WidgetsBinding.instance!.addObserver(this);
@@ -99,8 +101,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
 
     super.initState();
-    }
 
+    //初始化
+        () async{
+      WidgetsFlutterBinding.ensureInitialized();
+      await FlutterDownloader.initialize(
+          debug: true // optional: set false to disable printing logs to console
+      );
+      //监听回调
+      FlutterDownloader.registerCallback(downloadCallback);
+    }();
+    }
+  //下载回调方法
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+    print("id:" + id);
+    print("status:" + status.toString());
+    print("progress:" + progress.toString());
+  }
   @override
   Widget build(BuildContext context) {
     Widget? currentPage;
@@ -197,25 +214,25 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               var data = player.videoInfo!;
               // 右侧按钮列
               Widget buttons = TikTokButtonColumn(
-              isFavorite: isF,
-              onAvatar: () {
-              tkController.animateToPage(TikTokPagePositon.right);
-              },
-              onFavorite: () {
-              setState(() {
-              favoriteMap[i] = !isF;
-              });
-              // showAboutDialog(context: context);
-              },
-              onComment: () {
-              CustomBottomSheet.showModalBottomSheet(
-              backgroundColor: Colors.white.withOpacity(0),
-              context: context,
-              builder: (BuildContext context) =>
-              TikTokCommentBottomSheet(),
-              );
-              },
-              onShare: () {},
+                isFavorite: isF,
+                onAvatar: () {
+                  tkController.animateToPage(TikTokPagePositon.right);
+                },
+                onFavorite: () {
+                  setState(() {
+                    favoriteMap[i] = !isF;
+                  });
+                  // showAboutDialog(context: context);
+                },
+                onComment: () {
+                  CustomBottomSheet.showModalBottomSheet(
+                    backgroundColor: Colors.white.withOpacity(0),
+                    context: context,
+                    builder: (BuildContext context) =>
+                        TikTokCommentBottomSheet(),
+                  );
+                },
+                onShare: () {},
               );
               // video
               Widget currentVideo = Center(

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tiktok/views/Loading.dart';
 import 'dart:async';
@@ -7,8 +10,9 @@ import 'package:flutter_tiktok/model/file.dart';
 import 'package:flutter_tiktok/services/http_api.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
-var baseUrl = 'https://taiwan.dev.hbbeisheng.com'; //Http.baseUrl
-
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_tiktok/config/storage_manager.dart';
 Future<List> uploadFile (context, max,folder_name) async {
   Loading.showLoading(context);
   List<XFile>? resultList;
@@ -74,4 +78,88 @@ Future<List> uploadImages(context, max,folder_name) async {
 
   Loading.hideLoading(context);
   return finalImg;
+}
+// 申请权限
+Future<bool> _checkPermission() async {
+  // 先对所在平台进行判断
+  bool status = await Permission.storage.isGranted;
+  //判断如果还没拥有读写权限就申请获取权限
+  if (!status) {
+     await Permission.storage.request().isGranted;
+     return false;
+  }
+  return true;
+}
+// 获取存储路径
+Future<String> _findLocalPath(context) async {
+  // 因为Apple没有外置存储，所以第一步我们需要先对所在平台进行判断
+  // 如果是android，使用getExternalStorageDirectory
+  // 如果是iOS，使用getApplicationSupportDirectory
+  final directory = Theme.of(context).platform == TargetPlatform.android
+      ? await getExternalStorageDirectory()
+      : await getApplicationSupportDirectory();
+  return directory!.path;
+}
+// 根据 downloadUrl 和 savePath 下载文件
+downloadFile(context,downloadUrl ) async {
+  var status=await _checkPermission();
+  print('下载文件${status}');
+
+  if(status==true){
+    // 获取存储路径
+    var savePath=await _findLocalPath(context);
+    var _localPath = savePath + '/Download';
+    print('获取存储路径');
+    print(_localPath);
+    final savedDir = Directory(_localPath);
+    // 判断下载路径是否存在
+    bool hasExisted = await savedDir.exists();
+    // 不存在就新建路径
+    if (!hasExisted) {
+      savedDir.create();
+    }
+     print(hasExisted);
+    var name = downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1, downloadUrl.length);
+//    fixme:文件是否存在
+   // var file=new File("");
+//    if(file.existsSync()){
+//      print("文件存在--->先删除");
+//      file.deleteSync();
+//    }
+        await FlutterDownloader.enqueue(
+          url: downloadUrl,
+          savedDir: _localPath,
+          showNotification: true,
+          // show download progress in status bar (for Android)
+          openFileFromNotification:
+          true, // click on notification to open downloaded file (for Android)
+        );
+
+  }
+}
+Future<List> getLocalFiles(context)async {
+  try{
+
+  var savePath=await _findLocalPath(context);
+  var _localPath = savePath + '/Download';
+  var  directory= Directory(_localPath);
+  // 判断下载路径是否存在
+  bool hasExisted = await directory.exists();
+  // 不存在就新建路径
+  if (!hasExisted) {
+    return [];
+  }
+  print('文件长度');
+  print( directory.list());
+  // 遍历文件夹中的所有文件
+  directory.list().forEach((element) {
+    print('本地文件名');
+    print(element.path);
+  });
+
+  return  [];
+
+  }catch(e){
+    return  [];
+  }
 }
