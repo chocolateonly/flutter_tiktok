@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_tiktok/views/Loading.dart';
@@ -90,6 +90,7 @@ Future<bool> _checkPermission() async {
   }
   return true;
 }
+var local_files={};
 // 获取存储路径
 Future<String> _findLocalPath(context) async {
   // 因为Apple没有外置存储，所以第一步我们需要先对所在平台进行判断
@@ -108,7 +109,7 @@ downloadFile(context,downloadUrl ) async {
   if(status==true){
     // 获取存储路径
     var savePath=await _findLocalPath(context);
-    var _localPath = savePath + '/Download';
+    var _localPath = savePath + '/flutter_download';
     print('获取存储路径');
     print(_localPath);
     final savedDir = Directory(_localPath);
@@ -119,13 +120,14 @@ downloadFile(context,downloadUrl ) async {
       savedDir.create();
     }
      print(hasExisted);
-    var name = downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1, downloadUrl.length);
-//    fixme:文件是否存在
-   // var file=new File("");
-//    if(file.existsSync()){
-//      print("文件存在--->先删除");
-//      file.deleteSync();
-//    }
+     var name = downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1, downloadUrl.length);
+        //   文件是否存在
+        var files=await getLocalFiles(context);
+        if(files[name]){
+          //fixme:删除文件
+          files.remove(name);
+          return;
+        }
         await FlutterDownloader.enqueue(
           url: downloadUrl,
           savedDir: _localPath,
@@ -134,32 +136,14 @@ downloadFile(context,downloadUrl ) async {
           openFileFromNotification:
           true, // click on notification to open downloaded file (for Android)
         );
-
+    local_files[name]=_localPath+'/'+name;
+    StorageManager.sharedPreferences.setString(jsonEncode(local_files));
   }
 }
 Future<List> getLocalFiles(context)async {
-  try{
+  var files=StorageManager.sharedPreferences.getString(jsonEncode(local_files));
+  files=jsonDecode(files);
 
-  var savePath=await _findLocalPath(context);
-  var _localPath = savePath + '/Download';
-  var  directory= Directory(_localPath);
-  // 判断下载路径是否存在
-  bool hasExisted = await directory.exists();
-  // 不存在就新建路径
-  if (!hasExisted) {
-    return [];
-  }
-  print('文件长度');
-  print( directory.list());
-  // 遍历文件夹中的所有文件
-  directory.list().forEach((element) {
-    print('本地文件名');
-    print(element.path);
-  });
+  return  files;
 
-  return  [];
-
-  }catch(e){
-    return  [];
-  }
 }
