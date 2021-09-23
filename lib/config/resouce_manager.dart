@@ -18,8 +18,6 @@ Future<List> uploadFile (context, max,folder_name) async {
   List<XFile>? resultList;
   List<String> finalImg = [];
   FilePickerResult? result = await FilePicker.platform.pickFiles();
-  print('ssssssssssssssssss');
-  print(result!.files.single.path);
 
   if(result!=null){
   var path=result.files.single.path;
@@ -109,7 +107,7 @@ downloadFile(context,downloadUrl ) async {
   if(status==true){
     // 获取存储路径
     var savePath=await _findLocalPath(context);
-    var _localPath = savePath + '/flutter_download';
+    var _localPath = savePath + '/flutter_downloads';
     print('获取存储路径');
     print(_localPath);
     final savedDir = Directory(_localPath);
@@ -123,7 +121,7 @@ downloadFile(context,downloadUrl ) async {
      var name = downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1, downloadUrl.length);
         //   文件是否存在
         var files=await getLocalFiles(context);
-        if(files[name]){
+        if(files.containsKey(name)){
           //fixme:删除文件
           files.remove(name);
           return;
@@ -137,13 +135,13 @@ downloadFile(context,downloadUrl ) async {
           true, // click on notification to open downloaded file (for Android)
         );
     local_files[name]=_localPath+'/'+name;
-    StorageManager.sharedPreferences.setString(jsonEncode(local_files));
+    StorageManager.sharedPreferences.setString('localFiles',jsonEncode(local_files));
   }
 }
-Future<List> getLocalFiles(context)async {
-  var files=StorageManager.sharedPreferences.getString(jsonEncode(local_files));
-  files=jsonDecode(files);
+Future getLocalFiles(context)async {
+  var files=StorageManager.sharedPreferences.getString('localFiles');
+ if(files!=null)  files=jsonDecode(files);
 
-  return  files;
+  return  files??{};
 
 }

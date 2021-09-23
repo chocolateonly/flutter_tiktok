@@ -19,9 +19,9 @@ var videoList = [
 ];
 
 class UserVideo {
-  final String url;
-  final String image;
-  final String? desc;
+   String url;
+   String image;
+   String? desc;
 
   UserVideo({
     required this.url,
@@ -59,11 +59,30 @@ class UserVideo {
         list.add(UserVideo(image:  baseUrl+'/'+folderName+'/$e', url: '', desc: 'test_video_desc'));
       }
     });
+    print(list);
     print('获取本地数据：');
-    print(getLocalFiles(context));
+    var exist_files=await getLocalFiles(context);
+    print(exist_files);
+//    判断有无  无下载 有换本地地址
     list.forEach((item){
-      if(item.url!='') downloadFile(context,item.url);
+      var downloadUrl=item.url==''?item.image:item.url;
+      var name=downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1, downloadUrl.length);
+      print(name+':11');
+      print(exist_files[name]);
+      if( exist_files.containsKey(name)){
+//      换地址
+        if(item.url!='') item.url=exist_files[name];
+        else item.image=exist_files[name];
+      }else{
+//        下载
+        if(item.url!='') downloadFile(context,item.url);
+        else if(item.image!='') downloadFile(context,item.image);
+      }
+
+
     });
+    print('地址更新');
+    print(list);
     return list;
   }
 
