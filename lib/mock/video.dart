@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_tiktok/config/storage_manager.dart';
 import 'package:flutter_tiktok/services/GlobalConfig.dart';
 import 'dart:convert';
 import 'package:flutter_tiktok/services/http_utils.dart';
@@ -61,6 +62,7 @@ class UserVideo {
     });
     print(list);
     print('获取本地数据：');
+//    StorageManager.sharedPreferences.remove('localFiles');
     var exist_files=await getLocalFiles(context);
     print(exist_files);
 //    判断有无  无下载 有换本地地址
