@@ -18,7 +18,7 @@ import 'package:safemap/safemap.dart';
 import 'package:video_player/video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'msgPage.dart';
-
+import 'dart:io';
 import 'package:flutter_downloader/flutter_downloader.dart';
 
 /// 单独修改了bottomSheet组件的高度
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         .map(
     (e) => VPVideoController(
     videoInfo: e,
-    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.asset(e.url),
+    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File(e.url)),
     ),
     )
         .toList(),
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         .map(
     (e) => VPVideoController(
     videoInfo: e,
-    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.asset(e.url),
+    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File(e.url)),
     ),
     )
         .toList();
@@ -88,21 +88,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     getVideos();
 
     _videoListController.addListener(() {
-    setState(() {});
+      setState(() {});
     });
     tkController.addListener(
-    () {
-    if (tkController.value == TikTokPagePositon.middle) {
-    _videoListController.currentPlayer.play();
-    } else {
-    _videoListController.currentPlayer.pause();
-    }
-    },
+          () {
+        if (tkController.value == TikTokPagePositon.middle) {
+          _videoListController.currentPlayer.play();
+        } else {
+          _videoListController.currentPlayer.pause();
+        }
+      },
     );
 
     super.initState();
 
-    }
+  }
   //下载回调方法
   static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
     print("id:" + id);
@@ -205,39 +205,39 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               var data = player.videoInfo!;
               // 右侧按钮列
               Widget buttons = TikTokButtonColumn(
-                isFavorite: isF,
-                onAvatar: () {
-                  tkController.animateToPage(TikTokPagePositon.right);
-                },
-                onFavorite: () {
-                  setState(() {
-                    favoriteMap[i] = !isF;
-                  });
-                  // showAboutDialog(context: context);
-                },
-                onComment: () {
-                  CustomBottomSheet.showModalBottomSheet(
-                    backgroundColor: Colors.white.withOpacity(0),
-                    context: context,
-                    builder: (BuildContext context) =>
-                        TikTokCommentBottomSheet(),
-                  );
-                },
-                onShare: () {},
+              isFavorite: isF,
+              onAvatar: () {
+              tkController.animateToPage(TikTokPagePositon.right);
+              },
+              onFavorite: () {
+              setState(() {
+              favoriteMap[i] = !isF;
+              });
+              // showAboutDialog(context: context);
+              },
+              onComment: () {
+              CustomBottomSheet.showModalBottomSheet(
+              backgroundColor: Colors.white.withOpacity(0),
+              context: context,
+              builder: (BuildContext context) =>
+              TikTokCommentBottomSheet(),
+              );
+              },
+              onShare: () {},
               );
               // video
               Widget currentVideo = Center(
-                child: videoDataList[i].image!=''?
-                CachedNetworkImage(
-                  imageUrl: videoDataList[i].image,
-                  progressIndicatorBuilder: (context, url, downloadProgress) =>
-                      CircularProgressIndicator(value: downloadProgress.progress,color:Colors.orange),
-                  errorWidget: (context, url, error) => Icon(Icons.error,color:Colors.orange),
-                ):
+              child: videoDataList[i].image!=''?
+              CachedNetworkImage(
+              imageUrl: videoDataList[i].image,
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress,color:Colors.orange),
+              errorWidget: (context, url, error) => Icon(Icons.error,color:Colors.orange),
+              ):
               AspectRatio(
-                  aspectRatio: player.controller.value.aspectRatio,
-                  child: VideoPlayer(player.controller),
-                ),
+              aspectRatio: player.controller.value.aspectRatio,
+              child: VideoPlayer(player.controller),
+              ),
               );
 
               currentVideo = TikTokVideoPage(
@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               bottomPadding: hasBottomPadding ? 16.0 : 50.0,
               ),
               onSingleTap: () async {
-                print('开始播放');
+              print('开始播放');
               if (player.controller.value.isPlaying) {
               await player.pause();
               } else {
