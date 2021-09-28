@@ -102,15 +102,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     super.initState();
 
-    //初始化
-        () async{
-      WidgetsFlutterBinding.ensureInitialized();
-      await FlutterDownloader.initialize(
-          debug: true // optional: set false to disable printing logs to console
-      );
-      //监听回调
-      FlutterDownloader.registerCallback(downloadCallback);
-    }();
     }
   //下载回调方法
   static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
@@ -261,6 +252,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               bottomPadding: hasBottomPadding ? 16.0 : 50.0,
               ),
               onSingleTap: () async {
+                print('开始播放');
               if (player.controller.value.isPlaying) {
               await player.pause();
               } else {

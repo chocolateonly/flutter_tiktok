@@ -107,8 +107,8 @@ downloadFile(context,downloadUrl ) async {
   if(status==true){
     // 获取存储路径
     var savePath=await _findLocalPath(context);
-    var _localPath = savePath + '/flutter_downloads';
-    print('获取存储路径');
+    var _localPath = savePath + '/Download';
+    print('即将下载，获取存储路径');
     print(_localPath);
     final savedDir = Directory(_localPath);
     // 判断下载路径是否存在

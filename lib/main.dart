@@ -6,6 +6,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:flutter_tiktok/config/router_manager.dart';
 import 'package:flutter_tiktok/pages/settingsPage.dart';
 
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_tiktok/config/storage_manager.dart';
 void main() async {
   /// 自定义报错页面
@@ -21,6 +22,8 @@ void main() async {
       );
     };
   }
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(debug: true);
 
   WidgetsFlutterBinding.ensureInitialized(); //将组件和flutter绑定？
   await StorageManager.init(); //本地存储初始化
