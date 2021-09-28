@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         .map(
     (e) => VPVideoController(
     videoInfo: e,
-    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File(e.url)),
+    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File('/storage/self/primary/Download/test-video-1.mp4')),
     ),
     )
         .toList(),
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         .map(
     (e) => VPVideoController(
     videoInfo: e,
-    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File(e.url)),
+    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File('/storage/self/primary/Download/test-video-1.mp4')),
     ),
     )
         .toList();
@@ -102,7 +102,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     super.initState();
 
-  }
+    //初始化
+        () async{
+      WidgetsFlutterBinding.ensureInitialized();
+      await FlutterDownloader.initialize(
+          debug: true // optional: set false to disable printing logs to console
+      );
+      //监听回调
+      FlutterDownloader.registerCallback(downloadCallback);
+    }();
+    }
   //下载回调方法
   static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
     print("id:" + id);

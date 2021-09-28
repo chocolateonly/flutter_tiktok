@@ -22,8 +22,6 @@ void main() async {
       );
     };
   }
-  WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize(debug: true);
 
   WidgetsFlutterBinding.ensureInitialized(); //将组件和flutter绑定？
   await StorageManager.init(); //本地存储初始化

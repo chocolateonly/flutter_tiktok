@@ -129,10 +129,10 @@ downloadFile(context,downloadUrl ) async {
         await FlutterDownloader.enqueue(
           url: downloadUrl,
           savedDir: _localPath,
-          showNotification: true,
+          showNotification: false,
           // show download progress in status bar (for Android)
           openFileFromNotification:
-          true, // click on notification to open downloaded file (for Android)
+          false, // click on notification to open downloaded file (for Android)
         );
     local_files[name]=_localPath+'/'+name;
     StorageManager.sharedPreferences.setString('localFiles',jsonEncode(local_files));
