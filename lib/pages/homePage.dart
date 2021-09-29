@@ -67,7 +67,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         .map(
     (e) => VPVideoController(
     videoInfo: e,
-    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File('/storage/self/primary/Download/test-video-1.mp4')),
+//    '/storage/emulated/0/Download/test-video-7.MP4'
+    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File(e.url)),
     ),
     )
         .toList(),
@@ -76,7 +77,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         .map(
     (e) => VPVideoController(
     videoInfo: e,
-    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File('/storage/self/primary/Download/test-video-1.mp4')),
+    builder: () => e.url.contains('http')? VideoPlayerController.network(e.url):VideoPlayerController.file(new File(e.url)),
     ),
     )
         .toList();

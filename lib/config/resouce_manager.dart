@@ -115,7 +115,7 @@ downloadFile(context,downloadUrl ) async {
     bool hasExisted = await savedDir.exists();
     // 不存在就新建路径
     if (!hasExisted) {
-      savedDir.create();
+      savedDir.create(recursive:true);
     }
      print(hasExisted);
      var name = downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1, downloadUrl.length);
@@ -126,6 +126,7 @@ downloadFile(context,downloadUrl ) async {
           files.remove(name);
           return;
         }
+
         await FlutterDownloader.enqueue(
           url: downloadUrl,
           savedDir: _localPath,
@@ -134,7 +135,8 @@ downloadFile(context,downloadUrl ) async {
           openFileFromNotification:
           false, // click on notification to open downloaded file (for Android)
         );
-    local_files[name]=_localPath+'/'+name;
+//        fixme:下载的文件被放在了 下载管理器里
+    local_files[name]='/storage/emulated/0/Download'+'/'+name;
     StorageManager.sharedPreferences.setString('localFiles',jsonEncode(local_files));
   }
 }
