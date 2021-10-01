@@ -127,16 +127,17 @@ downloadFile(context,downloadUrl ) async {
           return;
         }
 
-        await FlutterDownloader.enqueue(
-          url: downloadUrl,
-          savedDir: _localPath,
-          showNotification: false,
-          // show download progress in status bar (for Android)
-          openFileFromNotification:
-          false, // click on notification to open downloaded file (for Android)
-        );
-//        fixme:下载的文件被放在了 下载管理器里
-    local_files[name]='/storage/emulated/0/Download'+'/'+name;
+//        await FlutterDownloader.enqueue(
+//          url: downloadUrl,
+//          savedDir: _localPath,
+//          showNotification: false,
+//          // show download progress in status bar (for Android)
+//          openFileFromNotification:
+//          false, // click on notification to open downloaded file (for Android)
+//        );
+    Dio dio = new Dio();
+    await dio.download( downloadUrl, _localPath+'/'+name);
+    local_files[name]=_localPath+'/'+name;
     StorageManager.sharedPreferences.setString('localFiles',jsonEncode(local_files));
   }
 }

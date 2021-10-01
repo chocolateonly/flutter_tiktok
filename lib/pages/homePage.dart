@@ -238,12 +238,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               // video
               Widget currentVideo = Center(
               child: videoDataList[i].image!=''?
+              videoDataList[i].image.contains('http')?
               CachedNetworkImage(
               imageUrl: videoDataList[i].image,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
               CircularProgressIndicator(value: downloadProgress.progress,color:Colors.orange),
               errorWidget: (context, url, error) => Icon(Icons.error,color:Colors.orange),
               ):
+              Image.file(new File(videoDataList[i].image)):
               AspectRatio(
               aspectRatio: player.controller.value.aspectRatio,
               child: VideoPlayer(player.controller),
